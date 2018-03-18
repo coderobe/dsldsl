@@ -1,0 +1,32 @@
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+
+// Settings
+#include "config.in"
+
+// Custom routing DSL
+#include "data.fw"
+
+// Custom routing
+#include "rules.fw"
+
+// Masquerade outbound traffic as coming from us
+-A POSTROUTING -s NETWORK_LOCAL ! -d NETWORK_LOCAL -j MASQUERADE
+COMMIT
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+// Forward new outbound traffic from the containers
+-A FORWARD -d NETWORK_LOCAL -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+COMMIT
