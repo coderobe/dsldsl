@@ -8,6 +8,6 @@ cat <<-EOF
 #define PORT --dport
 EOF
 
-lxc-ls -f 2>/dev/null | awk '{if($5!~/^\-/ && $5!~/^IPV4/){printf "#define TO_"; printf gensub("-", "_", "g", toupper($1)); printf " -j DNAT --to-destination "; print $5}}' | column -to' '
+lxc-ls -f 2>/dev/null | tr ',' ' ,' | awk '{if($5!~/^\-/ && $5!~/^IPV4/){printf "#define TO_"; printf gensub("-", "_", "g", toupper($1)); printf " -j DNAT --to-destination "; print $5}}' | column -to' '
 
 tail -n+2 /etc/services | tr '/' ' ' | awk '{printf "#define S_"; printf gensub("-", "_", "g", toupper($1)); printf "_"; printf toupper($3); printf " "; print $2}' | uniq
