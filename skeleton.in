@@ -27,6 +27,8 @@ COMMIT
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-// Forward new outbound traffic from the containers
+
+// Forward new outbound traffic from the routed devices
 -A FORWARD -d NETWORK_LOCAL -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+
 COMMIT

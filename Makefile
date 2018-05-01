@@ -15,4 +15,4 @@ data.fw: generate-data
 	./generate-data > data.fw
 
 compiled.rules: skeleton.in config.in rules.fw data.fw
-	cpp skeleton.in > compiled.rules
+	cpp skeleton.in | sed '/^#/d' | awk 'NF' > compiled.rules

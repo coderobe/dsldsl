@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-cat <<-EOF
-#define ROUTE -A PREROUTING
-#define EXT -i NETWORK_OUTSIDE_DEV
-#define TCP -p tcp -m tcp
-#define UDP -p udp -m udp
-#define PORT --dport
-EOF
-
-lxc-ls -f 2>/dev/null | tr ',' ' ,' | awk '{if($5!~/^\-/ && $5!~/^IPV4/){printf "#define TO_"; printf gensub("-", "_", "g", toupper($1)); printf " -j DNAT --to-destination "; print $5}}' | column -to' '
-
-tail -n+2 /etc/services | tr '/' ' ' | awk '{printf "#define S_"; printf gensub("-", "_", "g", toupper($1)); printf "_"; printf toupper($3); printf " "; print $2}' | uniq
+for snippet in data.d/*; do
+  [[ -x "${snippet}" ]] && . "${snippet}" || echo "ignoring $(basename "${snippet}")" >&2
+done
